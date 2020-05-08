@@ -19,6 +19,7 @@ void Chip8::LoadROM(std::string filename) {
 }
 
 void Chip8::Diassemble() {
+    std::cout << std::hex;
     for(unsigned long long i = 0; i < size; i+=2){
         opcode = (memory[i] << 8u)  | memory[i+1];
         ((*this).*(table[(opcode & 0xF000u) >> 12u]))();
@@ -69,19 +70,20 @@ Chip8::Chip8() {
 }
 
 void Chip8::OP_00E0() {
-    std::cout << "Clear Display" << std::endl;
+    std::cout << "CLS                       "  <<"; Clear the display." << std::endl;
 
 }
 
 // Return
 void Chip8::OP_00EE() {
 //    pc = stack[--sp];
-
+    std::cout << "RETURN                    " <<"; Return from a subroutine." << std::endl;
 }
 
 // goto NNN
 void Chip8::OP_1NNN() {
 //    pc = opcode & 0x0FFFu;
+    std::cout << "JP 0x0"  << (opcode & 0x0FFFu) << "                 ; Jump to location" << std::endl;
 
 }
 
@@ -89,6 +91,7 @@ void Chip8::OP_1NNN() {
 void Chip8::OP_2NNN() {
 //    stack[sp++] = pc;
 //    pc = opcode & 0x0FFFu;
+    std::cout << "CALL 0x0" << (opcode & 0x0FFFu) << "               ; Call subroutine" << std::endl;
 
 }
 
@@ -96,13 +99,14 @@ void Chip8::OP_2NNN() {
 void Chip8::OP_3XKK() {
 //    if(registers[(opcode & 0x0F00u) >> 8u] == (opcode & 0x00FFu))
 //        pc+=2;
-
+    std::cout << "SE V"<<((opcode & 0x0F00u) >> 8u) << ", "<<(opcode & 0x00FFu) << "                  ; Skip next instruction if Vx = kk" << std::endl;
 }
 
 // Skips the next instruction if VX doesn't equal NN
 void Chip8::OP_4XKK() {
 //    if(registers[(opcode & 0x0F00u) >> 8u] != (opcode & 0x00FFu))
 //        pc+=2;
+    std::cout << "SNE V"<<((opcode & 0x0F00u) >> 8u) << ", "<<(opcode & 0x00FFu) << "                 ; Skip next instruction if Vx != kk" << std::endl;
 
 }
 
@@ -110,41 +114,44 @@ void Chip8::OP_4XKK() {
 void Chip8::OP_5XY0() {
 //    if(registers[(opcode & 0x0F00u) >> 8u] == registers[(opcode & 0x00F0u) >> 4u])
 //        pc+=2;
-
+    std::cout << "SE V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Skip next instruction if Vx = Vy" << std::endl;
 }
 // Set Vx = kk.
 void Chip8::OP_6XKK() {
 //    registers[(opcode & 0x0F00u) >> 8u] = (opcode & 0x00FFu);
-
+    std::cout << "LD V"<<((opcode & 0x0F00u) >> 8u) << ", 0x00"<<((opcode & 0x00FFu))<< "              ; Set Vx = kk" << std::endl;
 }
 
 // Set Vx = Vx + kk.
 void Chip8::OP_7XKK() {
 //    registers[(opcode & 0x0F00u) >> 8u] += (opcode & 0x00FFu);
+    std::cout << "ADD V"<<((opcode & 0x0F00u) >> 8u) << ", 0x00"<<((opcode & 0x00FFu))<< "             ; Set Vx = Vx + kk" << std::endl;
 
 }
 
 // Set Vx = Vy
 void Chip8::OP_8XY0() {
 //    registers[(opcode & 0x0F00u) >> 8u] = registers[(opcode & 0x00F0u) >> 4u];
-
+    std::cout << "LD V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Set Vx = Vy" << std::endl;
 }
 
 // Set Vx = Vx Or Vy
 void Chip8::OP_8XY1() {
 //    registers[(opcode & 0x0F00u) >> 8u] |= registers[(opcode & 0x00F0u) >> 4u];
+    std::cout << "OR V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Set Vx = Vx OR Vy" << std::endl;
 
 }
 
 // Set Vx = Vx AND Vy
 void Chip8::OP_8XY2() {
 //    registers[(opcode & 0x0F00u) >> 8u] &= registers[(opcode & 0x00F0u) >> 4u];
-
+    std::cout << "AND V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Set Vx = Vx AND Vy" << std::endl;
 }
 
 // Set Vx = Vx XOR Vy
 void Chip8::OP_8XY3() {
 //    registers[(opcode & 0x0F00u) >> 8u] ^= registers[(opcode & 0x00F0u) >> 4u];
+    std::cout << "XOR V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Set Vx = Vx XOR Vy" << std::endl;
 
 }
 
@@ -155,6 +162,7 @@ void Chip8::OP_8XY4() {
 //    else
 //        registers[0xF] = 0;
 //    registers[(opcode & 0x0F00u) >> 8u] += registers[(opcode & 0x00F0u) >> 4u];
+    std::cout << "ADD V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Set Vx = Vx + Vy, VF = carry" << std::endl;
 
 }
 
@@ -165,6 +173,7 @@ void Chip8::OP_8XY5() {
 //    else
 //        registers[0xF] = 1;
 //    registers[(opcode & 0x0F00u) >> 8u] -= registers[(opcode & 0x00F0u) >> 4u];
+    std::cout << "SUB V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Set Vx = Vx - Vy, VF = NOT borrow" << std::endl;
 
 }
 
@@ -172,6 +181,7 @@ void Chip8::OP_8XY5() {
 void Chip8::OP_8XY6() {
 //    registers[0xF] = (registers[(opcode & 0x0F00u) >> 8u] & 0x1u);
 //    registers[(opcode & 0x0F00u) >> 8u] >>= 1u;
+    std::cout << "SHR V"<<((opcode & 0x0F00u) >> 8u) << "{, V"<<((opcode & 0x00F0u) >> 4u)<< "}                 ; Set Vx = Vx SHR 1" << std::endl;
 
 }
 
@@ -182,20 +192,21 @@ void Chip8::OP_8XY7() {
 //    else
 //        registers[0xF] = 1;
 //    registers[(opcode & 0x00F0u) >> 4u] -= registers[(opcode & 0x0F00u) >> 8u];
-
+    std::cout << "SUBN V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                ; Set Vx = Vy - Vx, VF = NOT borrow" << std::endl;
 }
 
 // Stores the most significant bit of VX in VF and then shifts VX to the left by 1
 void Chip8::OP_8XYE() {
 //    registers[0xF] = (registers[(opcode & 0x0F00u) >> 8u] >> 7u);
 //    registers[(opcode & 0x0F00u) >> 8u] <<= 1u;
-
+    std::cout << "SHL V"<<((opcode & 0x0F00u) >> 8u) << "{, V"<<((opcode & 0x00F0u) >> 4u)<< "}                 ; Set Vx = Vx SHL 1" << std::endl;
 }
 
 // Skip next instruction if Vx != Vy.
 void Chip8::OP_9XY0() {
 //    if(registers[(opcode & 0x0F00u) >> 8u] != registers[(opcode & 0x00F0u) >> 4u])
 //        pc+= 2;
+    std::cout << "SNE V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<< "                 ; Skip next instruction if Vx != Vy" << std::endl;
 
 }
 
@@ -203,19 +214,22 @@ void Chip8::OP_9XY0() {
 // Sets I to the address NNN. index
 void Chip8::OP_ANNN() {
 //    index = (opcode & 0x0FFFu);
+    std::cout << "LD I"<<((opcode & 0x0F00u) >> 8u) << ", 0x0"<<((opcode & 0x0FFFu))<< "              ; Set I = nnn" << std::endl;
+
 
 }
 
 // Jump to location nnn + V0.
 void Chip8::OP_BNNN() {
 //    pc = registers[0] + (opcode & 0x0FFFu);
+    std::cout << "JP V0" << ", 0x0"<<((opcode & 0x0FFFu))<< "              ; Jump to location nnn + V0" << std::endl;
 
 }
 
 // Set Vx = random byte AND kk.
 void Chip8::OP_CXKK() {
 //    registers[(opcode & 0x0F00u) >> 8u] = ((std::rand() % 0xFFu)&(opcode & 0x00FFu));
-
+    std::cout << "RND V"<<((opcode & 0x0F00u) >> 8u) << ", 0x00"<<((opcode & 0x00FFu))<< "              ; Set Vx = random byte AND kk" << std::endl;
 }
 
 // Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
@@ -244,7 +258,7 @@ void Chip8::OP_DXYN() {
 //        }
 //    }
 
-
+    std::cout << "DRW V"<<((opcode & 0x0F00u) >> 8u) << ", V"<<((opcode & 0x00F0u) >> 4u)<<", 0x000"<<(opcode & 0x000Fu)<< "        ; Display draw n-byte sprite" << std::endl;
 
 
 }
@@ -271,75 +285,6 @@ void Chip8::OP_FX07() {
 
 // Wait for a key press, store the value of the key in Vx.
 void Chip8::OP_FX0A() {
-
-//    if (keys[0])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 0;
-//    }
-//    else if (keys[1])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 1;
-//    }
-//    else if (keys[2])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 2;
-//    }
-//    else if (keys[3])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 3;
-//    }
-//    else if (keys[4])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 4;
-//    }
-//    else if (keys[5])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 5;
-//    }
-//    else if (keys[6])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 6;
-//    }
-//    else if (keys[7])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 7;
-//    }
-//    else if (keys[8])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 8;
-//    }
-//    else if (keys[9])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 9;
-//    }
-//    else if (keys[10])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 10;
-//    }
-//    else if (keys[11])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 11;
-//    }
-//    else if (keys[12])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 12;
-//    }
-//    else if (keys[13])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 13;
-//    }
-//    else if (keys[14])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 14;
-//    }
-//    else if (keys[15])
-//    {
-//        registers[(opcode & 0x0F00u) >> 8u] = 15;
-//    }
-//    else
-//    {
-//        pc -= 2;
-//    }
 
 }
 
