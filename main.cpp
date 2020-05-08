@@ -2,10 +2,12 @@
 #include "Chip8.hpp"
 
 int main() {
-    std::cout << "CHIP8 DIASSEMBLER!!!" << std::endl;
+    std::cout << "CHIP8 Disassembler, written by Ahmad Beirkdar" << std::endl;
     Chip8 chip;
-
-    chip.LoadROM("Pong.ch8");
+    std::string filename;
+    std::cout << "Enter file to disassemble: " << std::endl;
+    std::cin >> filename;
+    chip.LoadROM(filename);
     chip.Diassemble();
     return 0;
 }
